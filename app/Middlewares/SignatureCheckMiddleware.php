@@ -34,13 +34,13 @@ class SignatureCheckMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $para_temp = $request->post();
+        $para_temp = $request->input();
         if (isset($para_temp['postmantest']) && $para_temp['postmantest'] == 'd1d3a4bb67183b0df8db6922abacc032') {
             $response = $handler->handle($request);
             return $response->withAddedHeader('Signature-Check-Middleware', 'success');
         }
         if (empty($para_temp['sign'])) {
-            return \response()->json(['status' => -1, 'msg' => '签名错误', 'data' => null]);
+            return \response()->json(['status' => -1, 'msg' => '签名错误2', 'data' => null]);
         }
         $signature = new SignatrueService();
         //过滤参数
@@ -53,7 +53,7 @@ class SignatureCheckMiddleware implements MiddlewareInterface
         $flag = $signature->md5Verify($prestr, $para_temp['sign'], \config('signatureCheckKey'));
         //验证签名
         if (!$flag) {
-            return \response()->json(['status' => -1, 'msg' => '签名错误', 'data' => null]);
+            return \response()->json(['status' => -1, 'msg' => '签名错误1', 'data' => null]);
         }
 
         $response = $handler->handle($request);
